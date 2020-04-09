@@ -13,5 +13,5 @@ The goal of this script is to enable you to pull down your IP records using the 
 
 | Service    | Support              |
 |------------|----------------------|
-| Cloudflare | :checkbox: Supported |
+| Cloudflare | :+1: Supported |
 | AWS        | :warning: Planned    |
