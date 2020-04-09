@@ -5,7 +5,7 @@ class ScannerArgumentParser:
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(
-            description='Run a regular NMAP Scan of your Network and post changes to slack'
+            description='Run a regular NMAP Scan of your Network and post changes to Slack'
         )
         self.common_providers_args_parser = argparse.ArgumentParser(add_help=False)
         self.subparsers = self.parser.add_subparsers(
