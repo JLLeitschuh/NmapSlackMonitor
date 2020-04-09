@@ -3,9 +3,11 @@ from typing import Optional, List, Iterable
 
 import requests
 
+from NmapSlackMonitor.target_provider import TargetProvider
+
 
 @dataclass(frozen=True)
-class CloudFlareAPI:
+class CloudFlareAPI(TargetProvider):
     zone: str
     api_token: str
     name_filter: Optional[str]
@@ -27,7 +29,7 @@ class CloudFlareAPI:
                 continue
             yield result['content']
 
-    def get_dns(self) -> List[str]:
+    def get_ips(self) -> List[str]:
         ips = []
         page_number = 0
         while True:

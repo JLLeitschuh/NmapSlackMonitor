@@ -3,9 +3,11 @@ import os
 import time
 from typing import Optional
 
+from NmapSlackMonitor.aws import AwsAPI
 from NmapSlackMonitor.cli_parser import ScannerArgumentParser
 from NmapSlackMonitor.cloudflare import CloudFlareAPI
 from NmapSlackMonitor.slack import SlackAPI
+from NmapSlackMonitor.target_provider import TargetProvider
 
 _TIME_STRING_FORMAT_ = "%Y-%m-%d %H:%M:%S"
 
@@ -75,12 +77,21 @@ def run_from_cli():
         icon_emoji=args.get('slack_icon_emoji')
     )
 
-    cloudflare = CloudFlareAPI(
-        zone=args.get('cloudflare_zone'),
-        api_token=args.get('cloudflare_token'),
-        name_filter=args.get('cloudflare_dns_name_filter')
-    )
-    targets = cloudflare.get_dns()
+    target_provider: TargetProvider
+    if args.get('provider') == 'cloudflare':
+        target_provider = CloudFlareAPI(
+            zone=args.get('cloudflare_zone'),
+            api_token=args.get('cloudflare_token'),
+            name_filter=args.get('cloudflare_dns_name_filter')
+        )
+    elif args.get('provider') == 'aws':
+        target_provider = AwsAPI.authenticate(
+            profile=args.get('profile'),
+            aws_access_key_id=args.get('aws_access_key_id'),
+            aws_secret_access_key=args.get('aws_secret_access_key'),
+            aws_session_token=args.get('aws_session_token')
+        )
+    targets = target_provider.get_ips()
 
     while True:
         start_time = datetime.datetime.now()
