@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional, Tuple
 
 import boto3
 
@@ -15,7 +15,7 @@ def _flatten(iterable):
 class AwsAPI(TargetProvider):
     session: boto3.Session
 
-    def get_ips(self) -> List[str]:
+    def get_ips(self) -> List[Tuple[str, Optional[str]]]:
         # We have to pick one to start with
         ec2 = self.session.client('ec2', region_name='us-east-1')
         response = ec2.describe_regions()
@@ -30,7 +30,7 @@ class AwsAPI(TargetProvider):
                 (reservation['Instances'] for reservation in reservations)
             )
             ips = [instance['PublicIpAddress'] for instance in instances if 'PublicIpAddress' in instance]
-            all_ips.extend(ips)
+            all_ips.extend((ips, None))
         return []
 
     @staticmethod

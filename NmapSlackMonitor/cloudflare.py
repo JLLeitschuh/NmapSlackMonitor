@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, List, Iterable
+from typing import Optional, List, Iterable, Tuple
 
 import requests
 
@@ -23,14 +23,14 @@ class CloudFlareAPI(TargetProvider):
         )
         return response.json()
 
-    def _process_results(self, raw_results: dict) -> Iterable[str]:
+    def _process_results(self, raw_results: dict) -> Iterable[Tuple[str, str]]:
         for result in raw_results['result']:
             if self.name_filter not in result['name']:
                 continue
-            yield result['content']
+            yield result['content'], result['name']
 
-    def get_ips(self) -> List[str]:
-        ips = []
+    def get_ips(self) -> List[Tuple[str, Optional[str]]]:
+        ips: List[Tuple[str, str]] = []
         page_number = 0
         while True:
             page_number += 1

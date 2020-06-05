@@ -25,11 +25,14 @@ def relative_symlink(src, dst):
     os.symlink(file_name, dst)
 
 
-def process_target(target: str, date_str: str, nmap_flags: str) -> Optional[str]:
+def process_target(target: str, target_name: Optional[str], date_str: str, nmap_flags: str) -> Optional[str]:
     slack_message = None
     print()
     now = datetime.datetime.now()
-    print(f'{now.strftime(_TIME_STRING_FORMAT_)} - starting {target}')
+    print_text = f'{now.strftime(_TIME_STRING_FORMAT_)} - starting {target}'
+    if target_name:
+        print_text = f'{print_text} ({target_name})'
+    print(print_text)
 
     curr_log = f'scans/scan-{target}-{date_str}.xml'
     prev_log = f'scans/scan-{target}-prev.xml'
@@ -97,8 +100,8 @@ def run_from_cli():
         start_time = datetime.datetime.now()
 
         date_str = start_time.strftime('%Y-%m-%d_%H-%M-%S')
-        for target in targets:
-            slack_message = process_target(target, date_str, args.get('nmap_flags'))
+        for (target, target_name) in targets:
+            slack_message = process_target(target, target_name, date_str, args.get('nmap_flags'))
             if slack_message:
                 slack.post_to_slack(slack_message)
 
