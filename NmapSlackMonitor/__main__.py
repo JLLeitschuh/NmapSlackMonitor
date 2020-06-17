@@ -94,9 +94,11 @@ def run_from_cli():
             aws_secret_access_key=args.get('aws_secret_access_key'),
             aws_session_token=args.get('aws_session_token')
         )
+    else:
+        raise RuntimeError('No provider specified')
     targets = target_provider.get_ips()
 
-    while True:
+    while not args.get('no_loop'):
         start_time = datetime.datetime.now()
 
         date_str = start_time.strftime('%Y-%m-%d_%H-%M-%S')

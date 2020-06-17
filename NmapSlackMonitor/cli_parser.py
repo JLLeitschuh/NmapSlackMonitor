@@ -37,6 +37,13 @@ class ScannerArgumentParser:
             default=60
         )
         parser.add_argument(
+            '--no-loop',
+            dest='no_loop',
+            default=False,
+            action='store_true',
+            help='Only run the scanner one time, then exit'
+        )
+        parser.add_argument(
             '--slack-web-hook',
             action='store',
             required=True,
